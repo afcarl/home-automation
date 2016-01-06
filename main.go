@@ -17,7 +17,7 @@ var (
 )
 
 func init() {
-	setPinState(OFF)
+	setPinState(OFF, nil)
 }
 
 func main() {
@@ -27,6 +27,7 @@ func main() {
 	mux.Handle("/", fs)
 	mux.HandleFunc("/on", on)
 	mux.HandleFunc("/off", off)
+	mux.HandleFunc("/home", home)
 
 	log.Printf("listening on %s\n", ADDRESS)
 	http.ListenAndServe(ADDRESS, mux)
@@ -56,20 +57,29 @@ func NewParams(value state) *Params {
 	}
 }
 
+func home(w http.ResponseWriter, r *http.Request) {
+	r.Header["X-Home-Automation"] = []string{"ignore"}
+	switch STATE {
+	case ON:
+		on(w, r)
+	case OFF:
+		off(w, r)
+	}
+}
+
 func on(w http.ResponseWriter, r *http.Request) {
-	setPinState(ON)
+	setPinState(ON, r.Header)
 	t, _ := template.ParseFiles("switch.html")
 	t.Execute(w, NewParams(!STATE))
 }
 
 func off(w http.ResponseWriter, r *http.Request) {
-	setPinState(OFF)
+	setPinState(OFF, r.Header)
 	t, _ := template.ParseFiles("switch.html")
 	t.Execute(w, NewParams(!STATE))
 }
 
-func setPinState(s state) {
-	STATE = s
+func setPinState(s state, header http.Header) {
 	stateValue := ""
 	switch s {
 	case ON:
@@ -77,5 +87,13 @@ func setPinState(s state) {
 	case OFF:
 		stateValue = "low"
 	}
+
+	val, ok := header["X-Home-Automation"]
+	if ok && val[0] == "ignore" {
+		log.Printf("ignore pin set %s\n", stateValue)
+		return
+	}
+
+	STATE = s
 	log.Printf("setting state to %s\n", stateValue)
 }
