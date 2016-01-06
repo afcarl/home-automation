@@ -4,19 +4,25 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+
+	"github.com/hybridgroup/gobot/platforms/gpio"
+	"github.com/hybridgroup/gobot/platforms/raspi"
 )
 
 type state bool
 
 var (
-	ADDRESS       = ":8080"
-	PIN           = "7"
+	ADDRESS = ":8080"
+	PIN     = "7"
+	pin     *LedDriver
 	ON      state = true
 	OFF     state = false
 	STATE         = OFF
 )
 
 func init() {
+	r := raspi.NewRaspiAdaptor("raspi")
+	pin = gpio.NewLedDriver(r, "led", PIN)
 	setPinState(OFF, nil)
 }
 
@@ -95,5 +101,11 @@ func setPinState(s state, header http.Header) {
 	}
 
 	STATE = s
+	switch s {
+	case ON:
+		pin.On()
+	case OFF:
+		pin.Off()
+	}
 	log.Printf("setting state to %s\n", stateValue)
 }
