@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<style>
+			@font-face {
+				font-family: UbuntuMono;
+				src: url('/fonts/UbuntuMono-Italic.ttf');
+			}
+			body {
+				font-family: UbuntuMono;
+			}
+		</style>
+	</head>
+	<body>
+		<div align="center">
+			<a href="/{{.URL}}">
+				<img src="/images/{{.URL}}.png" align="middle"/>
+			</a>
+		</div>
+		<div align="center">
+			<h1>Press to switch {{.State}} the light </h1>
+		</div>
+	</body>
+</html>
