@@ -24,6 +24,6 @@ main	main.go	29;"	f	access:private	line:29	signature:()
 net/http	main.go	6;"	i	line:6
 off	main.go	82;"	f	access:private	line:82	signature:(w http.ResponseWriter, r *http.Request)
 on	main.go	76;"	f	access:private	line:76	signature:(w http.ResponseWriter, r *http.Request)
-pin	main.go	17;"	v	access:private	line:17	type:*LedDriver
+pin	main.go	17;"	v	access:private	line:17	type:*gpio.LedDriver
 setPinState	main.go	88;"	f	access:private	line:88	signature:(s state, header http.Header)
 state	main.go	12;"	t	access:private	line:12	type:bool

@@ -14,7 +14,7 @@ type state bool
 var (
 	ADDRESS = ":8080"
 	PIN     = "7"
-	pin     *LedDriver
+	pin     *gpio.LedDriver
 	ON      state = true
 	OFF     state = false
 	STATE         = OFF
